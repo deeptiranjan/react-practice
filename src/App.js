@@ -4,13 +4,14 @@ import Layout from './Components/common/layout';
 import Login from './Components/common/Login';
 import { Redirect, Route, Switch } from 'react-router';
 import {AuthContext} from './shared/context/auth-context';
-const App = (props) => {
+import axios from 'axios';
+const App = () => {
     const authData = useContext(AuthContext);
     console.log(authData);
     const userLazy = React.lazy(() => import('./Containers/Users/Users'));
     const queueLazy = React.lazy(() => import('./Containers/Queues/Queue'));
     //sessionStorage.setItem('token','test');
-    const token = sessionStorage.getItem('token');
+   // const token = sessionStorage.getItem('token');
     const routes = [
       {
         name : '/users',
@@ -24,7 +25,9 @@ const App = (props) => {
       }
     ]
     let authRoutes = null;
-    if(authData.isAuth){
+    if(authData.isAuth.token){
+      axios.defaults.baseURL ='https://react-demo-4c66c-default-rtdb.firebaseio.com/';
+      axios.defaults.headers.common['Authorization'] = authData.isAuth.token;
       authRoutes = routes.map(element =>{
         return (
           <Route path={element.name} key ={element.id} component={element.comp} exact></Route>

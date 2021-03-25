@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router';
 export const AuthContext = React.createContext({
     isAuth: false,
     login: () => { }
 })
 
 const AuthContextProvider = props => {
-    const [isAuthenticated, setAuthenticated] = useState(false);
+    let tokenData = '';
+    if (sessionStorage.getItem('userData')) {
+        tokenData = JSON.parse(sessionStorage.getItem('userData')).data.idToken;
+    }
+    const [isAuthenticated, setAuthenticated] = useState({
+        auth: false,
+        token: tokenData
+    });
 
     const loginHandler = () => {
-        setAuthenticated(true);
+        let token = '';
+        if (sessionStorage.getItem('userData')) {
+            token = JSON.parse(sessionStorage.getItem('userData')).data.idToken;
+        }
+        setAuthenticated({
+            auth: true,
+            token: token
+        });
     }
     return (
         <AuthContext.Provider value={{ login: loginHandler, isAuth: isAuthenticated }}>
